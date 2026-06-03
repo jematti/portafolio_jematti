@@ -309,7 +309,14 @@
                                                         {% for imagen in imagenes_ordenadas %}
                                                             {% if imagen.visible %}
                                                                 <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                                                                    <img src="{{ imagen.imagen.url }}" class="d-block w-100" alt="{% if imagen.titulo %}{{ imagen.titulo }}{% else %}{{ proyecto.titulo }} - captura {{ forloop.counter }}{% endif %}">
+                                                                    <img
+                                                                        src="{{ imagen.imagen.url }}"
+                                                                        class="d-block w-100 project-carousel-img"
+                                                                        alt="{% if imagen.titulo %}{{ imagen.titulo }} - {{ proyecto.titulo }}{% else %}Captura de {{ proyecto.titulo }}{% endif %}"
+                                                                        data-full-image="{{ imagen.imagen.url }}"
+                                                                        data-image-title="{% if imagen.titulo %}{{ imagen.titulo }}{% else %}{{ proyecto.titulo }}{% endif %}"
+                                                                        role="button"
+                                                                    >
                                                                 </div>
                                                             {% endif %}
                                                         {% endfor %}
@@ -521,6 +528,20 @@
             {% endif %}
         </div>
     </footer>
+
+    <div class="modal fade image-preview-modal" id="imagePreviewModal" tabindex="-1" aria-labelledby="imagePreviewModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content image-preview-content">
+                <div class="modal-header image-preview-header">
+                    <h2 class="modal-title" id="imagePreviewModalTitle">Vista previa</h2>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body image-preview-body">
+                    <img id="imagePreviewModalImg" src="" alt="Vista ampliada del proyecto">
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Bootstrap JS y script propio. -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
