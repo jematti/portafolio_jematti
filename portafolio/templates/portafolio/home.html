@@ -1,0 +1,523 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- Configuracion responsive base del sitio. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Jematti OS | Portafolio Web</title>
+
+    <!-- Bootstrap 5.3, Bootstrap Icons y Google Fonts se mantienen como base visual. -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- CSS propio del portafolio. -->
+    <link rel="stylesheet" href="{% static 'portafolio/css/styles.css' %}">
+</head>
+<body>
+    <!-- Fondo visual Jematti OS. -->
+    <div class="site-noise"></div>
+    <div class="grid-background"></div>
+
+    <!-- Navegacion principal. -->
+    <nav class="navbar navbar-expand-lg fixed-top os-navbar">
+        <div class="container">
+            <a class="navbar-brand os-brand" href="#inicio">
+                <span class="brand-mark">JM</span>
+                <span class="brand-text">jematti.os</span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarPortfolio" aria-controls="navbarPortfolio" aria-expanded="false" aria-label="Abrir menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarPortfolio">
+                <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+                    <li class="nav-item"><a class="nav-link" href="#perfil">Perfil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#stack">Stack</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#proyectos">Proyectos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#servicios">Servicios</a></li>
+                    <li class="nav-item"><a class="nav-cta" href="#contacto">Iniciar contacto</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Telemetria del sistema conectada al perfil del CMS. -->
+    <div class="telemetry-bar" aria-label="Estado del sistema">
+        <div class="container telemetry-content">
+            <span><i class="bi bi-circle-fill"></i> {% if perfil and perfil.texto_estado %}{{ perfil.texto_estado }}{% elif perfil and perfil.disponible %}SYSTEM ONLINE{% else %}SYSTEM STANDBY{% endif %}</span>
+            <span>BASE / {% if perfil and perfil.ubicacion %}{{ perfil.ubicacion }}{% else %}EL ALTO - LA PAZ{% endif %}</span>
+            <span>CORE / FULL-STACK + DATA + IT</span>
+            <span class="telemetry-clock" id="system-clock">--:--:-- BOT</span>
+        </div>
+    </div>
+
+    <!-- Hero editable desde Django Admin. -->
+    <header id="inicio" class="hero-os">
+        <div class="container">
+            <div class="row align-items-center min-vh-100 gy-5">
+                <div class="col-lg-7">
+                    <div class="system-label">
+                        <span class="status-dot"></span>
+                        {% if perfil and perfil.texto_estado %}
+                            {{ perfil.texto_estado }}
+                        {% elif perfil and perfil.disponible %}
+                            Ingeniero de Sistemas disponible
+                        {% else %}
+                            Bitacora profesional activa
+                        {% endif %}
+                    </div>
+
+                    <p class="terminal-line">
+                        <span>{% if perfil and perfil.github_usuario %}{{ perfil.github_usuario }}{% else %}javier{% endif %}@jematti</span>:~$ boot --workspace=portfolio --mode=build
+                    </p>
+
+                    <h1 class="hero-heading">
+                        {% if perfil and perfil.subtitulo_hero %}
+                            {{ perfil.subtitulo_hero }}
+                        {% else %}
+                            Ingenieria de sistemas aplicada a web, datos, infraestructura TI y experiencias digitales.
+                        {% endif %}
+                    </h1>
+
+                    <p class="hero-copy">
+                        {% if perfil and perfil.descripcion_corta %}
+                            {{ perfil.descripcion_corta }}
+                        {% else %}
+                            Soy Javier Edson Matti Zapana, Ingeniero de Sistemas de El Alto - La Paz, Bolivia. Trabajo entre desarrollo full-stack, analisis de datos, infraestructura TI y diseno UI para convertir procesos reales en soluciones digitales claras y sostenibles.
+                        {% endif %}
+                    </p>
+
+                    <div class="hero-actions">
+                        <a href="#proyectos" class="btn-os-primary">
+                            {% if perfil and perfil.texto_boton_principal %}{{ perfil.texto_boton_principal }}{% else %}Ver proyectos{% endif %}
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+
+                        {% if perfil and perfil.github_url %}
+                            <a href="{{ perfil.github_url }}" target="_blank" rel="noopener noreferrer" class="btn-os-secondary">
+                                <i class="bi bi-github"></i>
+                                GitHub
+                            </a>
+                        {% else %}
+                            <a href="https://github.com/jematti" target="_blank" rel="noopener noreferrer" class="btn-os-secondary">
+                                <i class="bi bi-github"></i>
+                                GitHub
+                            </a>
+                        {% endif %}
+                    </div>
+
+                    <!-- Redes sociales administrables. -->
+                    {% if redes_sociales %}
+                        <div class="social-links mt-4">
+                            {% for red in redes_sociales %}
+                                <a class="social-link" href="{{ red.url }}" target="_blank" rel="noopener noreferrer">
+                                    {% if red.icono %}
+                                        <i class="bi {{ red.icono }}"></i>
+                                    {% endif %}
+                                    {{ red.nombre }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="col-lg-5">
+                    <aside class="identity-panel">
+                        <div class="panel-header">
+                            <span>IDENTITY CARD</span>
+                            <span class="panel-code">ID: JM-BOL-01</span>
+                        </div>
+
+                        <div class="profile-core">
+                            {% if perfil and perfil.avatar %}
+                                <img src="{{ perfil.avatar.url }}" alt="Foto de {% if perfil.nombre %}{{ perfil.nombre }}{% else %}Javier Matti{% endif %}" class="profile-avatar">
+                            {% else %}
+                                <img src="https://avatars.githubusercontent.com/u/65749629?v=4" alt="Avatar de GitHub" class="profile-avatar">
+                            {% endif %}
+
+                            <div>
+                                <h2>
+                                    {% if perfil and perfil.nombre_corto %}
+                                        {{ perfil.nombre_corto }}
+                                    {% elif perfil and perfil.nombre_completo %}
+                                        {{ perfil.nombre_completo }}
+                                    {% elif perfil and perfil.nombre %}
+                                        {{ perfil.nombre }}
+                                    {% else %}
+                                        Javier Matti
+                                    {% endif %}
+                                </h2>
+                                <p>@{% if perfil and perfil.github_usuario %}{{ perfil.github_usuario }}{% else %}jematti{% endif %}</p>
+                            </div>
+                        </div>
+
+                        <div class="system-info">
+                            <div>
+                                <span>Base</span>
+                                <strong>{% if perfil and perfil.ubicacion %}{{ perfil.ubicacion }}{% else %}El Alto - La Paz, Bolivia{% endif %}</strong>
+                            </div>
+                            <div>
+                                <span>Rol</span>
+                                <strong>{% if perfil and perfil.titulo_profesional %}{{ perfil.titulo_profesional }}{% else %}Ingeniero de Sistemas{% endif %}</strong>
+                            </div>
+                            <div>
+                                <span>Email</span>
+                                <strong>{% if perfil and perfil.email %}{{ perfil.email }}{% else %}javier.matti.30@gmail.com{% endif %}</strong>
+                            </div>
+                            <div>
+                                <span>GitHub</span>
+                                <strong>@{% if perfil and perfil.github_usuario %}{{ perfil.github_usuario }}{% else %}jematti{% endif %}</strong>
+                            </div>
+                        </div>
+
+                        <div class="panel-footer">
+                            <span class="pulse-line"></span>
+                            {% if perfil and perfil.disponible %}Sistema activo{% else %}Bitacora disponible{% endif %}
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Perfil profesional. -->
+    <section id="perfil" class="os-section">
+        <div class="container">
+            <div class="section-kicker">01 / Perfil</div>
+
+            <div class="row gy-4 align-items-start">
+                <div class="col-lg-5">
+                    <h2 class="section-title">
+                        {% if perfil and perfil.titulo_profesional %}
+                            {{ perfil.titulo_profesional }}
+                        {% else %}
+                            No hago solo paginas. Integro sistemas, datos, soporte e interfaces.
+                        {% endif %}
+                    </h2>
+                </div>
+
+                <div class="col-lg-7">
+                    <p class="section-copy">
+                        {% if perfil and perfil.descripcion_larga %}
+                            {{ perfil.descripcion_larga }}
+                        {% elif perfil and perfil.descripcion_corta %}
+                            {{ perfil.descripcion_corta }}
+                        {% else %}
+                            Mi enfoque combina desarrollo web con PHP/Laravel, React, Django/Python y JavaScript; Excel avanzado y bases SQL; administracion de infraestructura TI, redes, backups y soporte; ademas de diseno y multimedia para comunicar mejor cada solucion.
+                        {% endif %}
+                    </p>
+
+                    <div class="profile-tags">
+                        {% if tecnologias %}
+                            {% for tecnologia in tecnologias %}
+                                <span>{{ tecnologia.nombre }}</span>
+                            {% endfor %}
+                        {% else %}
+                            <span>Full-stack</span>
+                            <span>Datos</span>
+                            <span>Infraestructura TI</span>
+                            <span>UI</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="log-strip" aria-label="Registro de enfoque profesional">
+                <span>BITACORA / 001</span>
+                <p>{% if perfil and perfil.subtitulo_hero %}{{ perfil.subtitulo_hero }}{% else %}Full-stack + datos + infraestructura TI + UI aplicada a procesos reales.{% endif %}</p>
+                <strong>{% if perfil and perfil.disponible %}READY{% else %}ONLINE{% endif %}</strong>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tecnologias visibles cargadas desde el CMS. -->
+    <section id="stack" class="os-section">
+        <div class="container">
+            <div class="section-kicker">02 / Stack tecnico</div>
+            <h2 class="section-title mb-4">Tecnologias que conecto para resolver.</h2>
+
+            <div class="tech-grid">
+                {% if tecnologias %}
+                    {% for tecnologia in tecnologias %}
+                        <article class="tech-card" {% if tecnologia.color %}style="--tech-color: {{ tecnologia.color }}"{% endif %}>
+                            <span class="module-number">{{ forloop.counter|stringformat:"02d" }}</span>
+                            <h3>
+                                {% if tecnologia.icono %}
+                                    <i class="bi {{ tecnologia.icono }}"></i>
+                                {% endif %}
+                                {{ tecnologia.nombre }}
+                            </h3>
+                            <p>{{ tecnologia.categoria }}</p>
+                        </article>
+                    {% endfor %}
+                {% else %}
+                    <div class="cms-empty-state">
+                        <span>&gt;</span> Stack tecnico pendiente de carga en el CMS.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Proyectos destacados como casos de estudio. -->
+    <section id="proyectos" class="os-section">
+        <div class="container">
+            <div class="section-kicker">03 / Proyectos</div>
+
+            <div class="project-console">
+                <div class="console-topbar">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <strong>github.fetch()</strong>
+                </div>
+
+                <div class="console-body">
+                    <p><span>&gt;</span> scan --source {% if perfil and perfil.github_url %}{{ perfil.github_url }}{% else %}github.com/jematti{% endif %}</p>
+                    <p><span>&gt;</span> Estado: proyectos destacados sincronizados<span class="console-cursor">_</span></p>
+                </div>
+            </div>
+
+            {% if error_github %}
+                <p class="github-error mt-4">{{ error_github }}</p>
+            {% endif %}
+
+            {% if proyectos_destacados %}
+                <div class="featured-projects mt-4">
+                    {% for proyecto in proyectos_destacados %}
+                        <article class="featured-project">
+                            <div class="row g-0 align-items-stretch">
+                                <div class="col-lg-7">
+                                    <!-- Carrusel independiente por proyecto. -->
+                                    <div id="carouselProyecto{{ forloop.counter }}" class="carousel slide project-carousel" data-bs-ride="false">
+                                        <div class="carousel-inner">
+                                            {% with imagenes_ordenadas=proyecto.imagenes.all|dictsortreversed:"visible" %}
+                                                {% with primera_imagen=imagenes_ordenadas|first %}
+                                                    {% if primera_imagen and primera_imagen.visible %}
+                                                        {% for imagen in imagenes_ordenadas %}
+                                                            {% if imagen.visible %}
+                                                                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                                                    <img src="{{ imagen.imagen.url }}" class="d-block w-100" alt="{% if imagen.titulo %}{{ imagen.titulo }}{% else %}{{ proyecto.titulo }} - captura {{ forloop.counter }}{% endif %}">
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% else %}
+                                                        <div class="carousel-item active">
+                                                            <div class="project-placeholder">
+                                                                <p><span>&gt;</span> Capturas del proyecto en preparacion.</p>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                {% endwith %}
+                                            {% endwith %}
+                                        </div>
+
+                                        {% with imagenes_ordenadas=proyecto.imagenes.all|dictsortreversed:"visible" %}
+                                            {% with primera_imagen=imagenes_ordenadas|first %}
+                                                {% if primera_imagen and primera_imagen.visible %}
+                                                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselProyecto{{ forloop.counter }}" data-bs-slide="prev">
+                                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                        <span class="visually-hidden">Captura anterior</span>
+                                                    </button>
+                                                    <button class="carousel-control-next" type="button" data-bs-target="#carouselProyecto{{ forloop.counter }}" data-bs-slide="next">
+                                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                        <span class="visually-hidden">Captura siguiente</span>
+                                                    </button>
+                                                {% endif %}
+                                            {% endwith %}
+                                        {% endwith %}
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-5">
+                                    <div class="project-content featured-project-body">
+                                        <div class="repo-card-header">
+                                            <span class="repo-index">CASE / {{ forloop.counter|stringformat:"02d" }}</span>
+                                            {% if proyecto.github_language %}
+                                                <span class="repo-language lang-{{ proyecto.github_language|lower }}">{{ proyecto.github_language }}</span>
+                                            {% else %}
+                                                <span class="repo-language muted">Sin lenguaje</span>
+                                            {% endif %}
+                                        </div>
+
+                                        <p class="project-category">{{ proyecto.categoria }}</p>
+                                        <h3>{{ proyecto.titulo }}</h3>
+
+                                        {% if proyecto.descripcion_corta %}
+                                            <p>{{ proyecto.descripcion_corta }}</p>
+                                        {% endif %}
+
+                                        {% if proyecto.descripcion_larga %}
+                                            <p>{{ proyecto.descripcion_larga }}</p>
+                                        {% elif proyecto.descripcion_profesional %}
+                                            <p>{{ proyecto.descripcion_profesional }}</p>
+                                        {% endif %}
+
+                                        {% if proyecto.problema or proyecto.solucion or proyecto.resultado %}
+                                            <!-- Narrativa tipo caso de estudio. -->
+                                            <div class="case-study-grid">
+                                                {% if proyecto.problema %}
+                                                    <p><strong>Problema:</strong> {{ proyecto.problema }}</p>
+                                                {% endif %}
+                                                {% if proyecto.solucion %}
+                                                    <p><strong>Solucion:</strong> {{ proyecto.solucion }}</p>
+                                                {% endif %}
+                                                {% if proyecto.resultado %}
+                                                    <p><strong>Resultado:</strong> {{ proyecto.resultado }}</p>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+
+                                        {% if proyecto.tecnologias.all %}
+                                            <div class="project-tech-list">
+                                                {% for tecnologia in proyecto.tecnologias.all %}
+                                                    <span {% if tecnologia.color %}style="--tech-color: {{ tecnologia.color }}"{% endif %}>
+                                                        {% if tecnologia.icono %}
+                                                            <i class="bi {{ tecnologia.icono }}"></i>
+                                                        {% endif %}
+                                                        {{ tecnologia.nombre }}
+                                                    </span>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+
+                                        <div class="repo-meta">
+                                            <span><i class="bi bi-star"></i> {{ proyecto.github_stars }}</span>
+                                            {% if proyecto.github_language %}
+                                                <span><i class="bi bi-code-slash"></i> {{ proyecto.github_language }}</span>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="project-actions">
+                                            {% if proyecto.demo_url %}
+                                                <a class="repo-link" href="{{ proyecto.demo_url }}" target="_blank" rel="noopener noreferrer">
+                                                    Ver demo <i class="bi bi-display"></i>
+                                                </a>
+                                            {% endif %}
+
+                                            {% if proyecto.github_url %}
+                                                <a class="repo-link" href="{{ proyecto.github_url }}" target="_blank" rel="noopener noreferrer">
+                                                    Ver codigo <i class="bi bi-github"></i>
+                                                </a>
+                                            {% elif proyecto.repo_url %}
+                                                <a class="repo-link" href="{{ proyecto.repo_url }}" target="_blank" rel="noopener noreferrer">
+                                                    Ver codigo <i class="bi bi-github"></i>
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="cms-empty-state mt-4"><span>&gt;</span> No hay proyectos destacados disponibles por el momento.</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Servicios visibles del CMS. -->
+    <section id="servicios" class="os-section">
+        <div class="container">
+            <div class="section-kicker">04 / Servicios</div>
+            <h2 class="section-title mb-4">Que puedo construir contigo.</h2>
+
+            <div class="services-grid">
+                {% if servicios %}
+                    {% for servicio in servicios %}
+                        <article class="service-card">
+                            <span class="module-number">Servicio {{ forloop.counter|stringformat:"02d" }}</span>
+                            <h3>
+                                {% if servicio.icono %}
+                                    <i class="bi {{ servicio.icono }}"></i>
+                                {% endif %}
+                                {{ servicio.titulo }}
+                            </h3>
+                            <p>{{ servicio.descripcion }}</p>
+                        </article>
+                    {% endfor %}
+                {% else %}
+                    <div class="cms-empty-state">
+                        <span>&gt;</span> Servicios en preparacion desde el CMS.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Contacto con email, WhatsApp y redes sociales. -->
+    <section id="contacto" class="os-section contact-section">
+        <div class="container">
+            <div class="contact-panel">
+                <div>
+                    <div class="section-kicker">05 / Contacto</div>
+                    <h2 class="section-title">Construimos una solucion util?</h2>
+                    <p class="section-copy">
+                        Si necesitas una plataforma web, automatizar un proceso, ordenar datos, fortalecer infraestructura TI o presentar mejor una solucion digital, este es el punto de inicio.
+                    </p>
+
+                    {% if redes_sociales %}
+                        <div class="social-links">
+                            {% for red in redes_sociales %}
+                                <a class="social-link" href="{{ red.url }}" target="_blank" rel="noopener noreferrer">
+                                    {% if red.icono %}
+                                        <i class="bi {{ red.icono }}"></i>
+                                    {% endif %}
+                                    {{ red.nombre }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="contact-actions">
+                    {% if perfil and perfil.email %}
+                        <a href="mailto:{{ perfil.email }}" class="btn-os-primary">
+                            Enviar mensaje
+                            <i class="bi bi-send"></i>
+                        </a>
+                    {% else %}
+                        <a href="mailto:javier.matti.30@gmail.com" class="btn-os-primary">
+                            Enviar mensaje
+                            <i class="bi bi-send"></i>
+                        </a>
+                    {% endif %}
+
+                    {% if perfil and perfil.telefono_whatsapp %}
+                        <a href="https://wa.me/{{ perfil.telefono_whatsapp }}" target="_blank" rel="noopener noreferrer" class="btn-os-secondary">
+                            <i class="bi bi-whatsapp"></i>
+                            WhatsApp
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="os-footer">
+        <div class="container footer-content">
+            <span>jematti.os / portfolio workstation</span>
+            {% if perfil and perfil.github_url %}
+                <a href="{{ perfil.github_url }}" target="_blank" rel="noopener noreferrer">
+                    <i class="bi bi-github"></i> {{ perfil.github_url }}
+                </a>
+            {% else %}
+                <a href="https://github.com/jematti" target="_blank" rel="noopener noreferrer">
+                    <i class="bi bi-github"></i> github.com/jematti
+                </a>
+            {% endif %}
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS y script propio. -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'portafolio/js/main.js' %}"></script>
+</body>
+</html>
