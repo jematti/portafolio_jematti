@@ -1,4 +1,3 @@
-@"
 # Entorno virtual
 venv/
 
@@ -21,9 +20,11 @@ db.sqlite3
 .DS_Store
 Thumbs.db
 
-# Archivos estáticos recolectados para producción
+# Archivos estaticos recolectados para produccion
 staticfiles/
 
 # Logs
 *.log
-"@ | Set-Content .gitignore
+
+# Nota: media/ no se ignora por ahora para permitir imagenes de demo.
+# En produccion se recomienda usar almacenamiento externo o subir imagenes desde admin.

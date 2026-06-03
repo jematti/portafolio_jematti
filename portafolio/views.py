@@ -2,9 +2,37 @@ from datetime import datetime
 
 import requests
 
+from django.conf import settings
+from django.http import HttpResponse
 from django.shortcuts import render
 
 from .models import Perfil, Proyecto, RedSocial, Servicio, Tecnologia
+
+
+def robots_txt(request):
+    """Archivo robots.txt simple para permitir indexacion del portafolio."""
+    contenido = (
+        'User-agent: *\n'
+        'Allow: /\n\n'
+        'Sitemap: /sitemap.xml\n'
+    )
+    return HttpResponse(contenido, content_type='text/plain')
+
+
+def sitemap_xml(request):
+    """Sitemap basico con la URL principal; cambiar SITE_URL al dominio final."""
+    site_url = getattr(settings, 'SITE_URL', 'http://127.0.0.1:8000/')
+    site_url = site_url if site_url.endswith('/') else f'{site_url}/'
+    contenido = f'''<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>{site_url}</loc>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+</urlset>
+'''
+    return HttpResponse(contenido, content_type='application/xml')
 
 
 def formatear_fecha_github(fecha_github):

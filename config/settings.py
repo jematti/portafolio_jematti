@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -19,13 +20,33 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-c4jhx&2ii*_tk52_t^$qlknv_fd1x=deun9_2&-zvs^mq-c0bj'
+# SECURITY WARNING: en produccion definir SECRET_KEY como variable de entorno.
+SECRET_KEY = os.environ.get('SECRET_KEY', 'clave-local-de-desarrollo')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# SECURITY WARNING: en produccion usar DEBUG=False.
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+# Hosts permitidos para local y produccion. Ejemplo:
+# ALLOWED_HOSTS=usuario.pythonanywhere.com,www.dominio.com
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.environ.get(
+        'ALLOWED_HOSTS',
+        '127.0.0.1,localhost',
+    ).split(',')
+    if host.strip()
+]
+
+# Origenes confiables para CSRF en produccion. Ejemplo:
+# CSRF_TRUSTED_ORIGINS=https://usuario.pythonanywhere.com,https://dominio.com
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',')
+    if origin.strip()
+]
+
+# URL publica temporal para sitemap.xml. Cambiar SITE_URL al dominio final.
+SITE_URL = os.environ.get('SITE_URL', 'http://127.0.0.1:8000/')
 
 
 # Application definition
@@ -117,6 +138,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Archivos subidos desde Django Admin, como avatares y capturas de proyectos.
 MEDIA_URL = 'media/'
